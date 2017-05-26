@@ -1,0 +1,16 @@
+/bin/
+/target/
+
+# Saved networks folder
+models/continuous
+samples
+featuremaps
+
+# Downloaded training data
+trainingdata
+
+logs
+image.png
+images/
+images-without-bots/
+images-with-bots/
