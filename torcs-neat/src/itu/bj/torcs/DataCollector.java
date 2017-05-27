@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import static org.bj.deeplearning.tools.Utils.resize;
 
+
 public class DataCollector {
 
 	private static final DataCollector _instance = new DataCollector();

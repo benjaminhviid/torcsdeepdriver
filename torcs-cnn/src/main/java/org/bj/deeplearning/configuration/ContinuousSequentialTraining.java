@@ -32,6 +32,19 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
         if (PropertiesReader.getProjectProperties().getProperty("training.collectStats").equals("true")) {
             for (int i = latestEpoch; i <= nEpochs; i++) {
 
+
+                //Initialize the user interface backend
+                // UIServer uiServer = UIServer.getInstance();
+
+                //Configure where the network information (gradients, activations, score vs. time etc) is to be stored
+                //Then add the StatsListener to collect this information from the network, as it trains
+             /*   StatsStorage statsStorage = new InMemoryStatsStorage();             //Alternative: new FileStatsStorage(File) - see UIStorageExample
+                int listenerFrequency = 1;
+                model.setListeners(new StatsListener(statsStorage, listenerFrequency));
+
+                //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
+                uiServer.attach(statsStorage);
+               */
                 model.fit(trainIterator);
                 System.out.println(String.format("*** Completed epoch %d ***", i));
                 testIterator.reset();
@@ -41,8 +54,6 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
             }
         }
         else{
-
-
                 //Second run: Load the saved stats and visualize. Go to http://localhost:9000/train
                 StatsStorage statsStorage = new FileStatsStorage(statsFile);    //If file already exists: load the data from it
                 UIServer uiServer = UIServer.getInstance();

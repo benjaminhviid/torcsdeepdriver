@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+
 /**
  * Created by benjaminhviid on 31/03/2017.
  **/
@@ -39,6 +40,8 @@ public class TrainingDataHandler {
     static Properties projectProperties = PropertiesReader.getProjectProperties();
     public static int width = Integer.parseInt(projectProperties.getProperty("training.image.width"));
     public static int height = Integer.parseInt(projectProperties.getProperty("training.image.height"));
+  //  public static String trainingType = projectProperties.getProperty("training.type");
+
 
 
 
@@ -223,7 +226,10 @@ public static List<String> getGroundTruthLabels() {
        //Stream<String> lines = ;
            // System.out.println("Path " + path + " at id: "+id);
           //  System.out.println("Length of sample array: " + lines.skip(id-1).findFirst().get().split(";").length);
-            return Files.lines(Paths.get(path)).skip(id-1).findFirst().get().split(";");
+        Stream<String> stream = Files.lines (Paths.get(path));
+        String[] strArr = stream.skip(id-1).findFirst().get().split(";");
+        stream.close();
+        return strArr;
 //        }
        /* catch (Exception e){
             System.out.println("Error at ID " + id + "\n" + e.getStackTrace());

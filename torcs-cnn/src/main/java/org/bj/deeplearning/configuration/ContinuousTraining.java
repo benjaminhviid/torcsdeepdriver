@@ -108,14 +108,14 @@ public abstract class ContinuousTraining implements Trainable {
 
         statsFile = new File(FileSystem.getContinuousFolder() + "/UIStorageExampleStats.dl4j");
 
-		if (collectStats) {
-            StatsStorage statsStorage = new FileStatsStorage(statsFile);
-            if (disableStatsWhenTraining)
+		//if (collectStats) {
+        //    StatsStorage statsStorage = new FileStatsStorage(statsFile);
+         //   if (disableStatsWhenTraining)
                model.setListeners(new IterationTimeListener(), new ScoreIterationListener(), new ScoreLogListener(100, "deepnet"+ Instant.now().toString()));
 				//model.setListeners(new IterationTimeListener(), new ScoreIterationListener());
-			else
-                model.setListeners(new IterationTimeListener(), new StatsListener(statsStorage), new ScoreIterationListener());
-        }
+		//	else
+          //      model.setListeners(new IterationTimeListener(), new StatsListener(statsStorage), new ScoreIterationListener());
+      //  }
 
     }
 }

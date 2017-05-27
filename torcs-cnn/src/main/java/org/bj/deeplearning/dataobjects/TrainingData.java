@@ -47,9 +47,9 @@ private int index = 0; // skip speed
 
 			index+=5; // skip ranges
 		}
-		else if (trainingDataType == TrainingDataType.RANGE){
+		if (trainingDataType == TrainingDataType.RANGE){
 			index ++; // skip range 0
-
+			index++; //skip angle
 			rangeLeft = Double.parseDouble(sample[index++]);
 			rangeLeft = map(rangeLeft, 0, 200, 0.0, 1.0);
 

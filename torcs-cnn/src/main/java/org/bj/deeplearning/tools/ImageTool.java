@@ -3,25 +3,14 @@ package org.bj.deeplearning.tools;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
-import java.util.Arrays;
 import java.util.stream.DoubleStream;
-import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageInputStream;
-import java.awt.Rectangle;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.bj.deeplearning.dataobjects.RunType;
-import org.bj.deeplearning.dataobjects.TrainingData;
 import org.bj.deeplearning.dataobjects.TrainingDataHandler;
-import org.bj.deeplearning.dataobjects.TrainingDataType;
 import org.datavec.image.loader.NativeImageLoader;
-import org.datavec.image.transform.ImageTransform;
-import org.deeplearning4j.ui.views.html.training.Training;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
-import java.util.function.Function;
 
 //import static com.sun.tools.doclint.Entity.image;
 
@@ -84,7 +73,7 @@ public class ImageTool extends RandomAccessFile {
 
 
     public static byte toByte(double d) {
-        double cutOff =0.1;
+        double cutOff =3;
         if (d < 0.0) {
             d = 0.0;
         }
@@ -217,7 +206,8 @@ public class ImageTool extends RandomAccessFile {
         // Load the image. This expects the image to be in the same package with this class
         BufferedImage image;
         try {
-            image = ImageIO.read(new FileImageInputStream(new File(path)));
+            FileImageInputStream stream = new FileImageInputStream(new File(path));
+            image = ImageIO.read(stream);
             int iw = image.getWidth();
             int ih = image.getHeight();
 
@@ -240,6 +230,8 @@ public class ImageTool extends RandomAccessFile {
                 bytes[index++] = (byte) blue;
             }
         }
+
+
             return bytes;
         } catch (IOException e) {
 
@@ -286,7 +278,7 @@ public class ImageTool extends RandomAccessFile {
     }
 
 
-    public static void cropImage(BufferedImage orig, String name,  int startX, int startY, int endX, int endY){
+    public static void cropAndSaveImage(BufferedImage orig, String name, int startX, int startY, int endX, int endY){
 
         BufferedImage img = orig.getSubimage(startX, startY, endX, endY); //fill in the corners of the desired crop location here
         BufferedImage cropped = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -297,20 +289,36 @@ public class ImageTool extends RandomAccessFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
+
+    public static void resizeAndSaveImage(BufferedImage img, String name, int newW, int newH) {
+
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_RGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        try {
+            ImageIO.write(dimg, "jpg", new File("screenshots/" + name + ".jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }    }
 
     public static void main(String[] args) throws IOException {
 
 
 
-        for (int i = 54063; i <= 123270; i++){
+        for (int i = 1; i <= 123270; i++){
             BufferedImage image = ImageIO.read(new FileImageInputStream(new File(TrainingDataHandler.SCREENSHOTS_PATH + "screenshot" + i + ".jpg")));
-            cropImage(image, "screenshot" + i, 16, 0, 96, 96);
+            //cropAndSaveImage(image, "screenshot" + i, 16, 0, 96, 96);
+            resizeAndSaveImage(image, "screenshot" + i, 85, 85);
             if (i%1000 == 999)
                 System.out.println(i);
         }
+
+
 
     }
 }

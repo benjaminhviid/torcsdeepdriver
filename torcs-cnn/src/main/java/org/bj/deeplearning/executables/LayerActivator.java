@@ -49,7 +49,7 @@ public class LayerActivator {
 		double[] pd = INDArrayTool.toFlatDoubleArray(indArray);
 		double[] pixeldata = ImageTool.normalize(pd);
 
-		network.output(Nd4j.create(pixeldata, new int[] { 1, 3, TrainingDataHandler.getWidth(), TrainingDataHandler.getHeight()}), false);
+		network.output(Nd4j.create(pixeldata, new int[] { 1, 3, 85, 85}), false);
 		int convLayers = NNTool.numberOfConvolutionalLayers(network);
 
 

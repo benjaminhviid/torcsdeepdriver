@@ -12,7 +12,7 @@ public class PropertiesReader {
 	private static String propertiesPath = ".." + fsc + "config" + fsc;
 	private static String userCredentialsPath = propertiesPath + "user_credentials.properties";
 	private static String projectPath = propertiesPath + "project.properties";
-	
+
 	private static Properties userCredentialsProperties;
 	private static Properties projectProperties;
 	
@@ -41,6 +41,9 @@ public class PropertiesReader {
 	}
 	
 	public static Properties getProjectProperties() {
+
+		System.out.println("Working Directory = " +
+				System.getProperty("user.dir"));
 		if(projectProperties == null) {
 			try {
 				InputStream is = new FileInputStream(new File(projectPath));

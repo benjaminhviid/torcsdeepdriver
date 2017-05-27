@@ -1,6 +1,7 @@
 package org.bj.deeplearning.configuration;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.bj.deeplearning.dataobjects.TrainingDataHandler;
+import org.bj.deeplearning.listener.LoggingEarlyStoppingListener;
 import org.bj.deeplearning.tools.PropertiesReader;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
@@ -16,6 +18,7 @@ import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver;
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
 import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -35,20 +38,24 @@ public class EarlyStoppingTraining implements Trainable {
 		//Training
         EarlyStoppingModelSaver<MultiLayerNetwork> saver = new LocalFileModelSaver(PropertiesReader.getProjectProperties().getProperty("training.persistence.savePath") + File.separator);
 
-        EarlyStoppingConfiguration<MultiLayerNetwork> esConf = new EarlyStoppingConfiguration.Builder<MultiLayerNetwork>()
+        EarlyStoppingConfiguration<MultiLayerNetwork> esConf;
+        esConf = new EarlyStoppingConfiguration.Builder<MultiLayerNetwork>()
                 .epochTerminationConditions(new MaxEpochsTerminationCondition(50))
+                .epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(5))
                 .evaluateEveryNEpochs(1)
-                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(5, TimeUnit.MINUTES)) //Max of 20 minutes
+                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(30, TimeUnit.MINUTES)) //Max of 20 minutes
                 .scoreCalculator(new DataSetLossCalculator(testIterator, true))     //Calculate test set score
                 .modelSaver(saver)
                 .build();
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf,configuration,trainIterator);
 
+        trainer.setListener(new LoggingEarlyStoppingListener());
+       // trainer.setListeners(new IterationTimeListener(), new ScoreIterationListener(), new ScoreLogListener(100, "deepnet"+ Instant.now().toString()));
         //Conduct early stopping training:
         long startTime = System.currentTimeMillis();
         EarlyStoppingResult<MultiLayerNetwork> result = trainer.fit();
-        MultiLayerNetwork bestModel = result.getBestModel();
+        MultiLayerNetwork best = result.getBestModel();
         System.out.println(String.format("The run took %d milliseconds", System.currentTimeMillis() - startTime));
         System.out.println("Termination reason: " + result.getTerminationReason());
         System.out.println("Termination details: " + result.getTerminationDetails());
