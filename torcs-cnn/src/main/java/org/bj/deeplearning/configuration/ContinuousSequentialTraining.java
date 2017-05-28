@@ -30,7 +30,6 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
     public void train(DataSetIterator trainIterator, DataSetIterator testIterator) {
 
 
-        if (PropertiesReader.getProjectProperties().getProperty("training.collectStats").equals("true")) {
             for (int i = latestEpoch; i <= nEpochs; i++) {
 
 
@@ -54,6 +53,5 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
                 saveModel(model, i);
                 outputDeadNeurons(model);
             }
-        }
     }
 }
