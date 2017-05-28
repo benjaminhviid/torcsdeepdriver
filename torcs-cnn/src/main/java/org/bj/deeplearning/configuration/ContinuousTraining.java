@@ -30,7 +30,9 @@ public abstract class ContinuousTraining implements Trainable {
 	protected MultiLayerNetwork model;
 	protected MultiLayerConfiguration configuration;
 	protected int height, width, featureCount, nEpochs, latestEpoch = 0;
-	private boolean outputDeadNeurons, saveModel, collectStats, disableStatsWhenTraining;
+	private boolean outputDeadNeurons;
+	private boolean saveModel;
+	protected boolean visualize;
     File statsFile;
 
 	public ContinuousTraining() throws IOException {
@@ -40,22 +42,14 @@ public abstract class ContinuousTraining implements Trainable {
 	@Override
 	public void train(DataSetIterator trainIterator, DataSetIterator testIterator) {
 
-        if (collectStats) {
-            for (int i = latestEpoch; i <= nEpochs; i++) {
-                model.fit(trainIterator);
-                System.out.println(String.format("*** Completed epoch %d ***", i));
-                testIterator.reset();
-                saveModel(model, i);
-                outputDeadNeurons(model);
-            }
-        }
-        else{
-/*
-            //Second run: Load the saved stats and visualize. Go to http://localhost:9000/train
-            StatsStorage statsStorage = new FileStatsStorage(statsFile);    //If file already exists: load the data from it
-            UIServer uiServer = UIServer.getInstance();
-            uiServer.attach(statsStorage);*/
-        }
+		for (int i = latestEpoch; i <= nEpochs; i++) {
+			model.fit(trainIterator);
+			System.out.println(String.format("*** Completed epoch %d ***", i));
+			testIterator.reset();
+			saveModel(model, i);
+			outputDeadNeurons(model);
+		}
+
 	}
 
 	protected void saveModel(MultiLayerNetwork model, int numeration) {
@@ -82,8 +76,7 @@ public abstract class ContinuousTraining implements Trainable {
         nEpochs = Integer.parseInt(projectProperties.getProperty("training.epochs"));
         outputDeadNeurons = projectProperties.getProperty("training.outputDeadNeurons").equals("true");
         saveModel = projectProperties.getProperty("training.saveModel").equals("true");
-        collectStats = projectProperties.getProperty("training.collectStats").equals("true");
-        disableStatsWhenTraining = projectProperties.getProperty("training.collectStats").equals("true");
+        visualize = projectProperties.getProperty("training.visualize").equals("true");
 
 
         initConfig();
@@ -107,15 +100,8 @@ public abstract class ContinuousTraining implements Trainable {
 		}
 
         statsFile = new File(FileSystem.getContinuousFolder() + "/UIStorageExampleStats.dl4j");
+		model.setListeners(new IterationTimeListener(), new ScoreIterationListener(), new ScoreLogListener(100, "deepnet"+ Instant.now().toString()));
 
-		//if (collectStats) {
-        //    StatsStorage statsStorage = new FileStatsStorage(statsFile);
-         //   if (disableStatsWhenTraining)
-               model.setListeners(new IterationTimeListener(), new ScoreIterationListener(), new ScoreLogListener(100, "deepnet"+ Instant.now().toString()));
-				//model.setListeners(new IterationTimeListener(), new ScoreIterationListener());
-		//	else
-          //      model.setListeners(new IterationTimeListener(), new StatsListener(statsStorage), new ScoreIterationListener());
-      //  }
 
     }
 }

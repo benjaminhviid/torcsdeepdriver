@@ -22,7 +22,6 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
       //      .setAppName("scenes"));
 
 
-    boolean visualize = false;
     public ContinuousSequentialTraining() throws IOException {
         super();
     }
@@ -55,13 +54,6 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
                 saveModel(model, i);
                 outputDeadNeurons(model);
             }
-        }
-        else{
-                //Second run: Load the saved stats and visualize. Go to http://localhost:9000/train
-                StatsStorage statsStorage = new FileStatsStorage(statsFile);    //If file already exists: load the data from it
-                UIServer uiServer = UIServer.getInstance();
-                uiServer.attach(statsStorage);
-
         }
     }
 }
