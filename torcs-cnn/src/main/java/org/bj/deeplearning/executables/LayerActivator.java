@@ -31,7 +31,7 @@ public class LayerActivator {
 			System.exit(1);
 		}
 		*/
-		File networkFile = Paths.get("models", "continuous", "model0.bin").toFile();
+		File networkFile = Paths.get("models", "continuous", "model5.bin").toFile();
 		int[] imageIds = new int[] { 45 };
 		
 		for(int imageId : imageIds) {

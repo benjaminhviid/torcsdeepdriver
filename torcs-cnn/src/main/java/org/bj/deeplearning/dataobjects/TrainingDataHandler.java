@@ -33,7 +33,7 @@ public class TrainingDataHandler {
     public static final String TEST_SCREENSHOTS_PATH = TrainingDataHandler.class.getClassLoader().getResource("torcsdata/test/screenshots/").getPath();
 
 
-    public static TrainingDataType trainingDataType = TrainingDataType.ANGULAR;
+    public static TrainingDataType trainingDataType = TrainingDataType.RANGE;
     public static RunType runType = RunType.TRAINING;
 
     public static int iterator = 0;

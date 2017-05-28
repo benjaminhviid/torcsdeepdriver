@@ -21,6 +21,8 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
     //final JavaSparkContext sc = new JavaSparkContext(new SparkConf().setMaster("local[*]").set("spark.driver.maxResultSize","3g")
       //      .setAppName("scenes"));
 
+
+    boolean visualize = false;
     public ContinuousSequentialTraining() throws IOException {
         super();
     }
@@ -33,18 +35,19 @@ public class ContinuousSequentialTraining extends ContinuousTraining {
             for (int i = latestEpoch; i <= nEpochs; i++) {
 
 
-                //Initialize the user interface backend
-                // UIServer uiServer = UIServer.getInstance();
+                if (visualize) {
+                    //Initialize the user interface backend
+                    UIServer uiServer = UIServer.getInstance();
 
-                //Configure where the network information (gradients, activations, score vs. time etc) is to be stored
-                //Then add the StatsListener to collect this information from the network, as it trains
-             /*   StatsStorage statsStorage = new InMemoryStatsStorage();             //Alternative: new FileStatsStorage(File) - see UIStorageExample
-                int listenerFrequency = 1;
-                model.setListeners(new StatsListener(statsStorage, listenerFrequency));
+                    //Configure where the network information (gradients, activations, score vs. time etc) is to be stored
+                    //Then add the StatsListener to collect this information from the network, as it trains
+                    StatsStorage statsStorage = new InMemoryStatsStorage();             //Alternative: new FileStatsStorage(File) - see UIStorageExample
+                    int listenerFrequency = 1;
+                    model.setListeners(new StatsListener(statsStorage, listenerFrequency));
 
-                //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
-                uiServer.attach(statsStorage);
-               */
+                    //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
+                    uiServer.attach(statsStorage);
+                }
                 model.fit(trainIterator);
                 System.out.println(String.format("*** Completed epoch %d ***", i));
                 testIterator.reset();
