@@ -6,11 +6,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Properties;
 
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.bj.deeplearning.tools.PropertiesReader;
 import org.deeplearning4j.api.storage.StatsStorage;
-import org.deeplearning4j.spark.impl.multilayer.SparkDl4jMultiLayer;
 import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
